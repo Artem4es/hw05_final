@@ -29,7 +29,6 @@ class PostModelTest(TestCase):
         str_post = post.__str__()[:SYMBOOL_LIMIT]
         self.assertEqual(str_post, 'Тестовый пост д', 'Check post.__str__')
 
-
     def test_post_verbose_name(self):
         """Проверяем, что verbose_name у модели Post совпадает с ожидаемым"""
         post = PostModelTest.post
@@ -38,16 +37,15 @@ class PostModelTest(TestCase):
             'pub_date': 'Дата публикации',
             'author': 'Автор',
             'group': 'Группа',
-            'image': 'Картинка'
+            'image': 'Картинка',
         }
-    
+
         for field, expected_value in field_verboses.items():
             with self.subTest(field=field):
                 self.assertEqual(
                     post._meta.get_field(field).verbose_name,
                     expected_value,
                 )
-
 
     def test_post_help_text(self):
         """Проверяем, что help_text у модели Post совпадает с ожидаемым"""
