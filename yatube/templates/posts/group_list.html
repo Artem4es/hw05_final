@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+  <div class="container py-5">
+    <h1>{{ group }}</h1>
+    <p>
+      {{ group.description }}
+    </p>
+    {% for post in page_obj %}
+        {% include 'includes/article.html' %} 
+    {% endfor %}
+    {% include 'posts/includes/paginator.html' %}
+  </div>  
+{% endblock %}

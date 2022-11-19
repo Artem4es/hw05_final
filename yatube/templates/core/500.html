@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Custom 500{% endblock %}
+{% block content %}
+  <h1>Упс.. Ошибочка 500</h1>
+  <p>Страницы с адресом {{ path }} не существует</p>
+  <a href="{% url 'posts:index' %}">Идите на главную</a>
+{% endblock %} 

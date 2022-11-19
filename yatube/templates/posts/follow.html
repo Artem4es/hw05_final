@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+  <div class="container py-5">  
+    {% include 'posts/includes/switcher.html' %}   
+    <h1>Посты ваших любимых авторов</h1>
+    {% for post in page_obj %}
+      {% include 'includes/article.html' %}
+    {% endfor %}
+    {% include 'posts/includes/paginator.html' %}
+  </div>
+{% endblock %}
