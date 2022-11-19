@@ -84,7 +84,7 @@ class Follow(AbstractModel):
         User,
         verbose_name="Автор",
         on_delete=models.CASCADE,
-        related_name='following',  #  followed
+        related_name='following',  # followed
     )
 
     def __str__(self):
