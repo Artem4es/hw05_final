@@ -7,13 +7,13 @@ from django.shortcuts import (
 from django.urls import reverse
 from django.views.decorators.cache import cache_page
 
-from .constants import POST_QTY
+from .constants import POST_QTY, RUNOUT
 from .forms import CommentForm, PostForm
 from .models import Group, Post, Follow, User
 from .paginator import paginate_page
 
 
-@cache_page(20, key_prefix='index_page')
+@cache_page(RUNOUT, key_prefix='index_page')
 def index(request):
     title = 'Последние обновления на сайте'
 
@@ -130,12 +130,8 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     title = 'Избранные авторы'
-    user_id = request.user.id
-    post_list = Post.objects.filter(
-        author__in=User.objects.get(id=user_id).follower.values_list(
-            'author_id'
-        )
-    )
+    follower = request.user
+    post_list = Post.objects.filter(author__following__user=follower)
     page_obj = paginate_page(request, post_list, POST_QTY)
     context = {
         'page_obj': page_obj,
@@ -150,9 +146,8 @@ def follow_index(request):
 def profile_follow(request, username):
     follower = request.user
     followed = User.objects.get(username=username)
-    subscriptions = follower.follower.values_list('author_id', flat=True)
-    if follower.id != followed.id and followed.id not in subscriptions:
-        Follow.objects.create(user=follower, author=followed)
+    if follower.id != followed.id:
+        Follow.objects.get_or_create(user=follower, author=followed)
     return redirect(reverse('posts:profile', kwargs={'username': username}))
 
 

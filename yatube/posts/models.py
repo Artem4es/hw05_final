@@ -15,6 +15,10 @@ class Group(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
 
 class Post(AbstractModel):
     text = models.TextField(
@@ -50,6 +54,8 @@ class Post(AbstractModel):
 
     class Meta:
         ordering = ('-pub_date',)
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
 
 
 class Comment(AbstractModel):
@@ -72,13 +78,17 @@ class Comment(AbstractModel):
     def __str__(self):
         return self.text
 
+    class Meta:
+        verbose_name = 'Коммент'
+        verbose_name_plural = 'Комменты'
 
-class Follow(AbstractModel):
+
+class Follow(models.Model):
     user = models.ForeignKey(
         User,
         verbose_name="Подписчик",
         on_delete=models.CASCADE,
-        related_name='follower',  # разве лучше follows?
+        related_name='follower',  # разве лучше не follows?
     )
     author = models.ForeignKey(
         User,
@@ -86,6 +96,18 @@ class Follow(AbstractModel):
         on_delete=models.CASCADE,
         related_name='following',  # followed
     )
+    pub_date = models.DateTimeField(
+        verbose_name='Дата подписки', auto_now_add=True
+    )
 
     def __str__(self):
-        return f'{self.user} подписан на {self.author}'
+        return f'{self.user} подписался на {self.author}'
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'], name='unique_subscription'
+            )
+        ]
