@@ -156,6 +156,5 @@ def profile_unfollow(request, username):
     follower = request.user
     followed = User.objects.get(username=username)
     follow_qs = Follow.objects.filter(user=follower, author=followed)
-    print(type(follow_qs))
     follow_qs.delete()
     return redirect(reverse('posts:profile', kwargs={'username': username}))
