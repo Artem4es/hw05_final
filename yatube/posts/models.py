@@ -20,6 +20,13 @@ class Group(models.Model):
         verbose_name_plural = 'Группы'
 
 
+# class Like(models.Model):
+#     number = models.IntegerField(verbose_name='Количество лайков', default=0)
+
+#     def __str__(self):
+#         return self.number
+
+
 class Post(AbstractModel):
     text = models.TextField(
         verbose_name='Текст поста',
@@ -48,6 +55,11 @@ class Post(AbstractModel):
         upload_to='posts/',
         blank=True,
     )
+    # like = models.IntegerField(verbose_name='Количество лайков', default=0)
+    likes = models.ManyToManyField(User, related_name='post_likes')
+
+    def number_of_likes(self):
+        return self.likes.count()
 
     def __str__(self):
         return self.text[:SYMBOOL_LIMIT]

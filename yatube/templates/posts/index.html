@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-  <div class="container py-5">  
-    {% include 'posts/includes/switcher.html' %}   
+  <div class="contik-xl py-5">
+    {% include 'posts/includes/switcher.html' %}  
+    <center> 
     <h1>Последние обновления на сайте</h1>
+    </center>
     {% for post in page_obj %}
       {% include 'includes/article.html' %}
     {% endfor %}

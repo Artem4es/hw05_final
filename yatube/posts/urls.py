@@ -25,4 +25,6 @@ urlpatterns = [
         views.profile_unfollow,
         name='profile_unfollow',
     ),
+    path('blogpost-like/<int:pk>', views.PostLike, name="blogpost_like"),
+    # path('api/v1/posts/<int:pk>/', views.get_post),  # новое
 ]

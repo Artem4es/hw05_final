@@ -38,7 +38,8 @@
       </p>
       {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
         <img class="card-img my-2" src="{{ im.url }}">
-      {% endthumbnail %}   
+      {% endthumbnail %}
+      
       {% if user.is_authenticated %}
         <div class="card my-4">
           <h5 class="card-header">Добавить комментарий:</h5>
@@ -67,6 +68,24 @@
           </div>
         </div>
       {% endfor %} 
+              <!-- LIKES -->
+  {% if user.is_authenticated %} 
+  <form action="{% url 'posts:blogpost_like' post.id %}" method="POST">
+  {% csrf_token %}
+  {% if post in user.post_likes.all %}
+    <button type="submit" name="blogpost_id" value="{{object.id}}" class="btn btn-info">💔</button>
+  {% else %}
+    <button type="submit" name="blogpost_id" value="{{object.id}}" class="btn btn-info">Мне нравится❤️</button>
+  {% endif %}
+  </form>
+
+  {% if post.likes.count >= 0 %}
+    <p><strong class="text-secondary">{{ post.likes.count }} это нравится{{ number_of_likes|pluralize }}</strong></p>
+  {% endif %}
+  {% else %}
+    <a class="btn btn-outline-info" href="{% url 'login' %}?next={{request.path}}">Хочу лайкнуть этот пост!</a><br>
+{% endif %}
+<!-- LIKES -->
     </article>
   </div> 
 </div>      

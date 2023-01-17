@@ -1,21 +1,68 @@
 {% load thumbnail %}
+{% comment %} <div class="container"> {% endcomment %}
+  {% comment %} <div class="col-12"> {% endcomment %}
 <article>
+ 
   <ul>
     <li>
-      Автор: {{ post.author.get_full_name }}
-      <a href="{% url 'posts:profile' post.author.username %}">все посты пользователя</a>
+      Автор:
+      <a href="{% url 'posts:profile' post.author.username %}">{{ post.author.get_full_name }}</a>
     </li>
     <li>
       Дата публикации: {{ post.pub_date|date:"d E Y" }}
     </li>
+    {% if post.group %} 
+    <li>
+      Группа:
+      <a href="{% url 'posts:group_list' post.group.slug %}">{{ post.group }}</a>
+    </li>
+    {% endif %}
   </ul>
+  
   {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-    <img class="card-img my-2" src="{{ im.url }}">
+    <img class="image" src="{{ im.url }}">
   {% endthumbnail %}
+  </image>
+  
+
+
   <p>{{ post.text }}</p>
     {% if post.group and title != 'Записи сообщества' %}  
       <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
     {% endif %}
   <p><a href="{% url 'posts:post_detail' post.id %}">подробная информация</a></p>
+
+  {% if user == post.author %}
+    <a href="{% url 'posts:post_edit' post.id %}">Редактировать пост</a>
+    <p>
+      <a href="https://www.computerhope.com/" 
+       style="text-decoration: none">Computer Hope.</a>
+    </p>
+  {% endif %}
+
+  <!-- LIKES -->
+  {% if user.is_authenticated %} 
+    <form action="{% url 'posts:blogpost_like' post.id %}" method="POST">
+    {% csrf_token %}
+    {% if post in user.post_likes.all %}
+      <button type="submit" name="blogpost_id" value="{{object.id}}" class="btn btn-info">💔</button>
+    {% else %}
+      <button type="submit" name="blogpost_id" value="{{object.id}}" class="btn btn-info">Мне нравится❤️</button>
+    {% endif %}
+    </form>
+  
+    {% if post.likes.count >= 0 %}
+      <p><strong class="text-secondary">{{ post.likes.count }} это нравится{{ number_of_likes|pluralize }}</strong></p>
+    {% endif %}
+    {% else %}
+      <a class="btn btn-outline-info" href="{% url 'login' %}?next={{request.path}}">Хочу лайкнуть этот пост!</a><br>
+  {% endif %}
+  <!-- LIKES -->
+
   {% if not forloop.last %}<hr>{% endif %}
-</article>  
+
+</article>
+
+
+
+

@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -6,14 +7,19 @@ from django.shortcuts import (
 )
 from django.urls import reverse
 from django.views.decorators.cache import cache_page
+from django.views.generic.detail import DetailView
 
 from .constants import POST_QTY, RUNOUT
 from .forms import CommentForm, PostForm
 from .models import Group, Post, Follow, User
 from .paginator import paginate_page
 
+from posts.models import User
 
-@cache_page(RUNOUT, key_prefix='index_page')
+
+# @cache_page(
+#     RUNOUT, key_prefix='index_page'
+# )  # выключил для того, чтобы не кешировались лайки
 def index(request):
     title = 'Последние обновления на сайте'
 
@@ -21,7 +27,6 @@ def index(request):
         'author',
         'group',
     )
-
     page_obj = paginate_page(request, post_list, POST_QTY)
     context = {
         'page_obj': page_obj,
@@ -158,3 +163,15 @@ def profile_unfollow(request, username):
     follow_qs = Follow.objects.filter(user=follower, author=followed)
     follow_qs.delete()
     return redirect(reverse('posts:profile', kwargs={'username': username}))
+
+
+@login_required
+def PostLike(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    pervious_url = request.META.get('HTTP_REFERER')
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+
+    return HttpResponseRedirect(pervious_url)
