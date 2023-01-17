@@ -6,7 +6,7 @@
   <ul>
     <li>
       Автор:
-      <a href="{% url 'posts:profile' post.author.username %}">{{ post.author.get_full_name }}</a>
+      <a href="{% url 'posts:profile' post.author.username %}" style="text-decoration: none">{{ post.author.get_full_name }}</a>
     </li>
     <li>
       Дата публикации: {{ post.pub_date|date:"d E Y" }}
@@ -14,31 +14,25 @@
     {% if post.group %} 
     <li>
       Группа:
-      <a href="{% url 'posts:group_list' post.group.slug %}">{{ post.group }}</a>
+      <a href="{% url 'posts:group_list' post.group.slug %}" style="text-decoration: none">{{ post.group }}</a>
     </li>
     {% endif %}
   </ul>
   
   {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-    <img class="image" src="{{ im.url }}">
+    <img class="img-thumbnail" src="{{ im.url }}">
   {% endthumbnail %}
   </image>
   
 
 
   <p>{{ post.text }}</p>
-    {% if post.group and title != 'Записи сообщества' %}  
-      <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-    {% endif %}
-  <p><a href="{% url 'posts:post_detail' post.id %}">подробная информация</a></p>
-
+  <p><a href="{% url 'posts:post_detail' post.id %}" style="text-decoration: none">Читать комменты</a></p>
+  <p>
   {% if user == post.author %}
-    <a href="{% url 'posts:post_edit' post.id %}">Редактировать пост</a>
-    <p>
-      <a href="https://www.computerhope.com/" 
-       style="text-decoration: none">Computer Hope.</a>
-    </p>
+    <a href="{% url 'posts:post_edit' post.id %}" style="text-decoration: none">Редактировать пост</a>
   {% endif %}
+  </p>
 
   <!-- LIKES -->
   {% if user.is_authenticated %} 
